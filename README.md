@@ -38,7 +38,7 @@ mv ~/.local/state/nvim ~/.local/state/nvim.backup
 mv ~/.cache/nvim ~/.cache/nvim.backup
 
 # Clone this repo
-git clone https://github.com/YOUR_USERNAME/YOUR_REPO.git ~/.config/nvim
+git clone https://github.com/UncleWeb1992/nvim.git ~/.config/nvim
 
 # Start Neovim (plugins will auto-install)
 nvim
