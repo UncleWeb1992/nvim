@@ -1,72 +1,119 @@
 return {
-  "nvim-treesitter/nvim-treesitter",
-  build = ":TSUpdate",
-  lazy = false,
-  config = function()
-    -- безопасный require на актуальном API
-    local ok, ts_config = pcall(require, "nvim-treesitter.config")
-    if not ok then
-      vim.notify("nvim-treesitter не найден!", vim.log.levels.ERROR)
-      return
-    end
+	-- ================================================
+	-- ПЛАГИН: nvim-treesitter/nvim-treesitter
+	-- Продвинутая система подсветки синтаксиса и анализа кода
+	-- ================================================
+	"nvim-treesitter/nvim-treesitter",
+	build = ":TSUpdate", -- Команда для обновления парсеров при установке
+	lazy = false, -- Загружать сразу при старте (важно для подсветки)
 
-    ts_config.setup({
-      ensure_installed = {
-        "bash",
-        "c",
-        "cpp",
-        "css",
-        "dockerfile",
-        "go",
-        "gomod",
-        "html",
-        "javascript",
-        "json",
-        "lua",
-        "markdown",
-        "markdown_inline",
-        "rust",
-        "tsx",
-        "typescript",
-        "vim",
-        "yaml",
-        "query",
-      },
+	config = function()
+		-- Безопасная загрузка модуля с обработкой возможных ошибок
+		-- pcall (protected call) предотвратит краш Neovim если модуль недоступен
+		local ok, ts_config = pcall(require, "nvim-treesitter.config")
+		if not ok then
+			-- Если модуль не найден, показываем ошибку и выходим
+			vim.notify("nvim-treesitter не найден!", vim.log.levels.ERROR)
+			return
+		end
 
-      auto_install = true,
- 
-      highlight = {
-        enable = true,
-        additional_vim_regex_highlighting = false,
-      },
+		-- Основная конфигурация Treesitter
+		ts_config.setup({
+			-- ============================================
+			-- СПИСОК ОБЯЗАТЕЛЬНЫХ ПАРСЕРОВ ДЛЯ УСТАНОВКИ
+			-- ============================================
+			ensure_installed = {
+				-- Системные и shell языки
+				"bash", -- Shell скрипты
+				"dockerfile", -- Docker конфигурации
 
-      indent = {
-        enable = false,
-      },
+				-- Языки программирования общего назначения
+				"c", -- Язык C
+				"cpp", -- C++
+				"go", -- Go
+				"gomod", -- Go модули (go.mod)
+				"javascript", -- JavaScript
+				"lua", -- Lua (важен для конфигурации Neovim)
+				"rust", -- Rust
+				"typescript", -- TypeScript
+				"vim", -- Vim script
 
-      incremental_selection = {
-        enable = true,
-        keymaps = {
-          init_selection = "<CR>",
-          node_incremental = "<CR>",
-          scope_incremental = "<TAB>",
-          node_decremental = "<S-TAB>",
-        },
-      },
+				-- Веб-технологии
+				"html", -- HTML
+				"css", -- CSS
+				"tsx", -- TypeScript React (JSX/TSX)
 
-      textobjects = {
-        select = {
-          enable = true,
-          lookahead = true,
-          keymaps = {
-            ["af"] = "@function.outer",
-            ["if"] = "@function.inner",
-            ["ac"] = "@class.outer",
-            ["ic"] = "@class.inner",
-          },
-        },
-      },
-    })
-  end,
+				-- Языки разметки и данных
+				"json", -- JSON
+				"yaml", -- YAML
+				"markdown", -- Markdown документы
+				"markdown_inline", -- Встроенный markdown в других файлах
+
+				-- Служебные
+				"query", -- Treesitter query language (для расширений)
+			},
+
+			-- Автоматическая установка недостающих парсеров
+			-- Если какой-то язык из списка не установлен, Treesitter установит его автоматически
+			auto_install = true,
+
+			-- ============================================
+			-- НАСТРОЙКА ПОДСВЕТКИ СИНТАКСИСА
+			-- ============================================
+			highlight = {
+				enable = true, -- Включить подсветку синтаксиса через Treesitter
+
+				-- Не использовать старую regex-based подсветку Vim
+				-- Treesitter подсветка более точная и производительная
+				additional_vim_regex_highlighting = false,
+			},
+
+			-- ============================================
+			-- АВТОМАТИЧЕСКИЕ ОТСТУПЫ
+			-- ============================================
+			indent = {
+				enable = false, -- ОТКЛЮЧЕНО: автоотступы через Treesitter
+				-- Рекомендуется использовать специализированные форматтеры
+				-- (например, conform.nvim, null-ls и т.д.)
+			},
+
+			-- ============================================
+			-- ИНКРЕМЕНТАЛЬНОЕ ВЫДЕЛЕНИЕ
+			-- Умное выделение кода на основе синтаксического дерева
+			-- ============================================
+			incremental_selection = {
+				enable = true, -- Включить инкрементальное выделение
+
+				-- Настройки горячих клавиш:
+				keymaps = {
+					init_selection = "<CR>", -- Начать выделение (Enter)
+					node_incremental = "<CR>", -- Расширить выделение на узел (Enter)
+					scope_incremental = "<TAB>", -- Выделить область/scope (Tab)
+					node_decremental = "<S-TAB>", -- Уменьшить выделение (Shift+Tab)
+				},
+			},
+
+			-- ============================================
+			-- ТЕКСТОВЫЕ ОБЪЕКТЫ
+			-- Расширенные текстовые объекты на основе синтаксического дерева
+			-- ============================================
+			textobjects = {
+				select = {
+					enable = true, -- Включить текстовые объекты
+					lookahead = true, -- Предпросмотр при выборе объектов
+
+					-- Настройки горячих клавиш для текстовых объектов:
+					keymaps = {
+						-- Функции
+						["af"] = "@function.outer", -- Вся функция (a = around, f = function)
+						["if"] = "@function.inner", -- Тело функции (i = inside, f = function)
+
+						-- Классы/структуры
+						["ac"] = "@class.outer", -- Весь класс
+						["ic"] = "@class.inner", -- Тело класса
+					},
+				},
+			},
+		})
+	end,
 }
-

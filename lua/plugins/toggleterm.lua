@@ -1,16 +1,56 @@
 return {
-  "akinsho/toggleterm.nvim",
-  version = "*",
-  config = function()
-    require("toggleterm").setup({
-      size = 10,
-      open_mapping = [[<c-\>]],
-      direction = "horizontal",
-    })
+	"akinsho/toggleterm.nvim",
+	version = "*",
+	config = function()
+		require("toggleterm").setup({
+			-- ============================================
+			-- ОСНОВНЫЕ НАСТРОЙКИ
+			-- ============================================
+			size = 10, -- Высота терминала в строках
+			open_mapping = [[<c-\>]], -- Ctrl+\ для открытия/закрытия
+			direction = "horizontal", -- Плавающий терминал для отступов
 
-    -- Горячие клавиши
-    vim.keymap.set("n", "<leader>tt", "<cmd>ToggleTerm<cr>", { desc = "Toggle terminal" })
-    vim.keymap.set("t", "<Esc>", "<C-\\><C-n>", { desc = "Exit terminal mode" })
+			-- ============================================
+			-- НАСТРОЙКИ ОТСТУПОВ (PADDING) ДЛЯ ПЛАВАЮЩЕГО ОКНА
+			-- ============================================
+			horizontal_opts = {
+				border = "rounded", -- Скругленная рамка
+				width = 100, -- Ширина в процентах от окна
+				height = 30, -- Высота в процентах от окна
+				winblend = 0, -- Прозрачность (0 = нет)
 
-  end,
+				--ОТСТУПЫ В ПИКСЕЛЯХ! ⬇️
+				offsets = {
+					top = 10, -- Отступ сверху в пикселях
+					bottom = 10, -- Отступ снизу в пикселях
+					left = 20, -- Отступ слева в пикселях
+					right = 20, -- Отступ справа в пикселях
+				},
+			},
+
+			-- ============================================
+			-- ДОПОЛНИТЕЛЬНЫЕ НАСТРОЙКИ
+			-- ============================================
+			shading_factor = 2, -- Затемнение фона под терминалом
+			start_in_insert = true, -- Начинать в режиме вставки
+		})
+
+		-- ================================================
+		-- ГОРЯЧИЕ КЛАВИШИ
+		-- ================================================
+		vim.keymap.set("n", "<leader>tt", "<cmd>ToggleTerm<cr>", {
+			desc = "Toggle terminal",
+		})
+		vim.keymap.set("t", "<Esc>", "<C-\\><C-n>", {
+			desc = "Exit terminal mode",
+		})
+
+		-- ================================================
+		-- ДОПОЛНИТЕЛЬНЫЕ КЛАВИШИ ДЛЯ УПРАВЛЕНИЯ
+		-- ================================================
+		vim.keymap.set("t", "<C-h>", "<C-\\><C-n><C-w>h", { desc = "Move left from terminal" })
+		vim.keymap.set("t", "<C-j>", "<C-\\><C-n><C-w>j", { desc = "Move down from terminal" })
+		vim.keymap.set("t", "<C-k>", "<C-\\><C-n><C-w>k", { desc = "Move up from terminal" })
+		vim.keymap.set("t", "<C-l>", "<C-\\><C-n><C-w>l", { desc = "Move right from terminal" })
+	end,
 }
