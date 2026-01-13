@@ -40,5 +40,9 @@ mv ~/.cache/nvim ~/.cache/nvim.backup
 # Clone this repo
 git clone https://github.com/UncleWeb1992/nvim.git ~/.config/nvim
 
+unzip stylua-linux-x86_64.zip
+chmod +x stylua
+sudo mv stylua /usr/local/bin/
+
 # Start Neovim (plugins will auto-install)
 nvim
